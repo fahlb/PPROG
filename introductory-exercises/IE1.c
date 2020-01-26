@@ -7,9 +7,8 @@
 
 #include <math.h>           // ??
 #include <stdio.h>          // IO: fprintf(), etc.
-#include <stdbool.h>        // bool
 
-double ODEs(int i, double t, const double var[1]){
+double ODEs(int i, double t, const double var[]){
     // var[0]: x(t)
     double x = var[0];  // [m]
     double alpha = 1;   // [s^-1]
@@ -19,6 +18,8 @@ double ODEs(int i, double t, const double var[1]){
             // xdot = -alpha*x
 //            printf("%f\n",-alpha*x);
             return -alpha*x;
+        case -1:
+            printf("???");  // just to test something
         default: 
             printf("invalid argument i=%d for ODEs()\n", i);
             return 0;
@@ -27,66 +28,59 @@ double ODEs(int i, double t, const double var[1]){
 
 //bool stopIf();  // function for breaking condition of integration?
 
-void EU(int nSteps, int nVar, double t, double h, double var[nVar], 
-        double tArr[nVar], double results[nVar][nSteps]){
-
-    // save initial conditions
-    tArr[0] = t;
-    for(int i=0;i<nVar;i++){
-        results[i][0] = var[i];
-    }
-
+void EU(int nSteps, int nVar, double h, double *t, double x[][nVar]){
 
     // calculate steps
-    for(int n=1;n<=nSteps;n++){
+    int n = 1;
+    while(n<nSteps){
         for(int i=0;i<nVar;i++){
-            var[i] += h*ODEs(i,t,var);
+            x[n][i] = x[n-1][i] + h*ODEs(i,*t,x[n-1]);
         }
-        t += h;
+        *t += h;
 
-        // save results
-        tArr[n] = t;
-        for(int i=0;i<nVar;i++){
-            results[i][n] = var[i];
-        }
+        n += 1;   // increase step counter
     }
 }
 
 int main(){
     // set stepsize h, start and finish time
-    double h = 0.01;         // [s]
-    double t_0 = 0.0;       // [s]
-    double t_f = 20.0;      // [s]
+    const double h = 0.1;         // [s]
+    const double t_0 = 0.0;       // [s]
+    const double t_f = 20.0;      // [s]
     
     // calculate number of steps N
-    int nSteps = (t_f-t_0)/h + 1;   
-    int nVar   = 1;
+    const int nSteps = (t_f-t_0)/h;   
+    const int nVar   = 1;
 
     // for results
-    double results[nVar][nSteps];
-    double tArr[nSteps];
+    double x[nSteps][nVar];
+    double t;
 
-    // initial conditions
-    double var0[nVar]; 
-    var0[0] = 1.0;        // [m]
+    // set initial conditions
+    x[0][0] = 1.0; // [m]
+    t = t_0;
 
     // calculate
-    EU(nSteps, nVar, t_0, h, var0, tArr, results);
+    EU(nSteps, nVar, h, &t, x);
 
     // write results into file
-    FILE * output;
-    output = fopen("output/IE1.dat", "w+");
+
+    double h_min = 0.05; // minimum step size writen
+    //double nSteps_write = nSteps*(h/h_min);
+    int n_skip = h_min/h;    // n skipped to stick to h_min
+
+    FILE* output;
+    char path[50];
+    sprintf(path, "output/IE1_h=%.2f.dat",h);
+    output = fopen(path, "w+");
     fprintf(output, "# t[s]         x[m]         \n");
-    for(int n=0;n<=nSteps;n++){
-        double h_min = 0.5;  // write no smaller step size than h_min
-        if(h<h_min && n%((int)(h/h_min)+1)!=1){
-            n += (int)(h/h_min)+1;
-            printf("%i\n",n);
-        }
-        fprintf(output, "  %.3e", tArr[n]);
+    for(int n=0;n<nSteps;n++){
+        if(h<h_min && (n%n_skip)){continue;} //skip if not multiple of n_skip
+        fprintf(output, "  %.3e", n*h);
         for(int i=0; i<nVar;i++){
-            fprintf(output, "    %.3e\n", results[i][n]);
+            fprintf(output, "    %.3e", x[n][i]);
         }
+        fprintf(output, "\n");
     }
     fclose(output);
 
