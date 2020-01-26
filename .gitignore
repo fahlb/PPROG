@@ -1,2 +1,4 @@
 test/
-output/
+output/*.dat
+introductory-exercises/output/*.dat
+.vscode/
