@@ -1,10 +1,3 @@
-/*  TODO:
-    - don't overcomplicate IE1...
-    - function pointer to ODE function?
-    - write results within EU() ?
-    - write no smaller stepsize than h=0.05s
-*/
-
 #include <math.h>           // ??
 #include <stdio.h>          // IO: fprintf(), etc.
 
