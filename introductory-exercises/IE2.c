@@ -3,16 +3,19 @@
 
 double ODEs(int i, double t, const double var[]){
     // var[0]: x(t)
+    // var[1]: v(t)
+
     double x = var[0];  // [m]
-    double alpha = 1;   // [s^-1]
+    double v = var[1];  // [m/s]
+    double omega = 1;   // [1/s]
 
     switch(i){
         case 0:
-            // xdot = -alpha*x
-//            printf("%f\n",-alpha*x);
-            return -alpha*x;
-        case -1:
-            printf("???");  // just to test something
+            // dx/dt = v(t)
+            return v;
+        case 1: 
+            // dv/dt = -omega^2 * x
+            return - omega*omega*x;
         default: 
             printf("invalid argument i=%d for ODEs()\n", i);
             return 0;
@@ -37,21 +40,22 @@ void EU(int nSteps, int nVar, double h, double *t, double x[][nVar]){
 
 int main(){
     // set stepsize h, start and finish time
-    const double h = 0.1;         // [s]
+    const double h = 0.001;         // [s]
     const double t_0 = 0.0;       // [s]
     const double t_f = 20.0;      // [s]
     
     // calculate number of steps N
     const int nSteps = (t_f-t_0)/h;   
-    const int nVar   = 1;
+    const int nVar   = 2;
 
     // for results
     double x[nSteps][nVar];
     double t;
 
     // set initial conditions
-    x[0][0] = 1.0; // [m]
-    t = t_0;
+    x[0][0] = 0; // [m]
+    x[0][1] = 1; // [m/s]
+    t = t_0;     // [s]
 
     // calculate
     EU(nSteps, nVar, h, &t, x);
@@ -64,9 +68,13 @@ int main(){
 
     FILE* output;
     char path[50];
-    sprintf(path, "output/IE1_h=%.2f.dat",h);
+    sprintf(path, "output/IE2_h=%.3f.dat",h);
     output = fopen(path, "w+");
-    fprintf(output, "# t[s]         x[m]         \n");
+    fprintf(output, "# t[s]         ");
+    fprintf(output, "x[m]         "  );
+    fprintf(output, "v[m/s]       "  );
+    fprintf(output, "\n");
+
     for(int n=0;n<nSteps;n++){
         if(h<h_min && (n%n_skip)){continue;} //skip if not multiple of n_skip
         fprintf(output, "  %.3e", n*h);
