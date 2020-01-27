@@ -38,7 +38,7 @@ double ODEs(int i, double t, const double var[]){
 
 int main(){
     // set stepsize h, start and finish time
-    const double h = 0.01;         // [s]
+    const double h = 0.1;         // [s]
     const double h_min = 0.05; // minimum step size to be written
  
     const double t_0 = 0.0;       // [s]
@@ -60,8 +60,8 @@ int main(){
     FILE* output;
     char path[50]; 
     sprintf(path, "../output/IE2_RK_h=%.3f.dat",h);
-//    output = fopen(path, "w+");
-    output = fopen("../output/test.dat", "w+"); 
+    output = fopen(path, "w+");
+//    output = fopen("../output/test.dat", "w+"); 
     fprintf(output, "# t[s]         ");
     fprintf(output, "x[m]         "  );
     fprintf(output, "v[m/s]       "  );
@@ -75,7 +75,7 @@ int main(){
 
 
     // calculate
-    EU(&ODEs, h, &t,nVar, x, &output, h_min); 
+    RK4(&ODEs, h, &t,nVar, x, &output, h_min); 
 
     // don't forget to close file!
     fclose(output);
