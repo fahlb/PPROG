@@ -75,7 +75,9 @@ void RK4(double (*f)(int, double, const double*),  // function pointer
          int nSteps, double h, double *t, int nVar, double x[][nVar]){
 
     int n = 0;  // start with first step (n=0 : initial conditions)
-    while(n<nSteps-1){
+//    while(n<nSteps-1){
+    while((*f)(-1,*t,x[n])){    // breaks code :(   
+
 
         double temp_copy_x[nVar];
         for(int i=0;i<nVar;i++){
@@ -87,7 +89,7 @@ void RK4(double (*f)(int, double, const double*),  // function pointer
         for(int i=0;i<nVar;i++){
             x[n+1][i] = temp_copy_x[i];
         }
-
+        printf("last n: %d \n", n);
         n += 1;   // increase step counter
     }
 }
@@ -97,14 +99,15 @@ void AdaptiveRK4(double (*f)(int, double, const double*),  // function pointer
 
     double max_error[nVar]; // make argument; maximum error for each variable
     for(int i=0;i<nVar;i++){
-        max_error[i] = 1e-6;
+        max_error[i] = 1e-2;
     }   // temporary!!!
 
     int n = 0;  // start with first step (n=0 : initial conditions)
     double x_1full[nVar];   // temporary x[i] for 1 full step
     double x_2half[nVar];   // temporary x[i] for 2 half steps
-
-    while(n<nSteps-1){
+    
+//    while(n<nSteps-1){
+    while((*f)(-1,*t,x[n])){    // breaks code :(   
         // save copy of x[i] for both advances
         for(int i=0;i<nVar;i++){
             x_1full[i] = x[n][i];
@@ -137,7 +140,7 @@ void AdaptiveRK4(double (*f)(int, double, const double*),  // function pointer
             h=h/2;  // halve step size
             continue;   // skip n++ -> redo with new h
         }
-
+        printf("last n: %d \n", n);
         n += 1;   // increase step counter
     }
 }

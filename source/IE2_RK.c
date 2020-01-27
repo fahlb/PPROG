@@ -49,7 +49,8 @@ int main(){
     t = t_0;     // [s]
 
     // calculate
-    RK4(&ODEs,nSteps, h, &t, nVar, x);
+    AdaptiveRK4(&ODEs,nSteps, h, &t, nVar, x);
+    printf("i make it this far\n");
 
     // write results into file
     double h_min = 0.05; // minimum step size writen
@@ -65,7 +66,10 @@ int main(){
     fprintf(output, "v[m/s]       "  );
     fprintf(output, "\n");
 
-    for(int n=0;n<nSteps;n++){
+    int size = sizeof(x) / sizeof(x[0][0]) / nVar;
+//    printf("size = %d \n",size);
+
+    for(int n=0;n<size;n++){
         if(h<h_min && (n%n_skip)){continue;} //skip if not multiple of n_skip
         fprintf(output, "  %.3e", n*h);
         for(int i=0; i<nVar;i++){
