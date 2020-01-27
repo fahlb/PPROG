@@ -13,8 +13,13 @@
 void NextEU(double (*f)(int, double, const double*),  // function pointer
             double h, double *t, int nVar, double x[]){
     
+    double temp_x[nVar];
+
     for(int i=0;i<nVar;i++){
-        x[i] += h*(*f)(i,*t,x);
+        temp_x[i] = x[i];
+    }
+    for(int i=0;i<nVar;i++){
+        x[i] += h*(*f)(i,*t,temp_x);
     }
 }
 
@@ -25,14 +30,16 @@ void EU(double (*f)(int, double, const double[]),  // function pointer
     // calculate steps
     int n = 0;
     while((*f)(-1,*t,x)){
+
         NextEU(f,h,t,nVar,x);
         *t += h;
         
-        printf("last n: %d \n", n);
-        n += 1;   // increase step counter
+        // increase step counter
+//        printf("last n: %d \n", n);
+        n += 1;   
 
         // write step
-        if(h<h_min && (n%(int)(h_min/h))){continue;} //skip if not multiple of n_skip
+        if(h<h_min && (n%(int)(h_min/h))){continue;} //skip small step
         fprintf(*output, "  %.3e", *t);
         for(int i=0; i<nVar;i++){
             fprintf(*output, "    %.3e", x[i]);
@@ -90,10 +97,11 @@ void RK4(double (*f)(int, double, const double[]),  // function pointer
         *t += h;
 
         // increase step counter
-        printf("last n: %d \n", n);
-        n += 1;
+//        printf("last n: %d \n", n);
+        n += 1;   
+
         // write step
-        if(h<h_min && (n%(int)(h_min/h))){continue;} //skip if not multiple of n_skip
+        if(h<h_min && (n%(int)(h_min/h))){continue;} //skip small step
         fprintf(*output, "  %.3e", *t);
         for(int i=0; i<nVar;i++){
             fprintf(*output, "    %.3e", x[i]);
@@ -109,7 +117,7 @@ void AdaptiveRK4(double (*f)(int, double, const double[]),  // function pointer
 
     double max_error[nVar]; // make argument; maximum error for each variable
     for(int i=0;i<nVar;i++){
-        max_error[i] = 1e-5;
+        max_error[i] = 1e-7;
     }   // temporary!!!
 
     int n = 0;  // start with first step (n=0 : initial conditions)
@@ -152,11 +160,12 @@ void AdaptiveRK4(double (*f)(int, double, const double[]),  // function pointer
             continue;   // skip n++ -> redo with new h
         }
 
-        printf("last n: %d \n", n);
-        n += 1;   // increase step counter
+        // increase step counter
+//        printf("last n: %d \n", n);
+        n += 1;   
 
         // write step
-        if(h<h_min && (n%(int)(h_min/h))){continue;} //skip if not multiple of n_skip
+        if(h<h_min && (n%(int)(h_min/h))){continue;} //skip small step
         fprintf(*output, "  %.3e", *t);
         for(int i=0; i<nVar;i++){
             fprintf(*output, "    %.3e", x[i]);
@@ -164,5 +173,3 @@ void AdaptiveRK4(double (*f)(int, double, const double[]),  // function pointer
         fprintf(*output, "\n");
     }
 }
-
-

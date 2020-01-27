@@ -29,16 +29,16 @@ double ODEs(int i, double t, const double var[]){
         case -1:
             // use as doIf() ?
             if(t<20.0){return 1;}
-            if(t>20.0){return 0;}
+            if(t>=20.0){return 0;}
         default: 
             printf("invalid argument i=%d for ODEs()\n", i);
             return 0;
     }
 }
- 
+
 int main(){
     // set stepsize h, start and finish time
-    const double h = 0.5;         // [s]
+    const double h = 0.01;         // [s]
     const double h_min = 0.05; // minimum step size to be written
  
     const double t_0 = 0.0;       // [s]
@@ -73,10 +73,11 @@ int main(){
     } 
     fprintf(output, "\n");
 
- 
-    // calculate
-    RK4(&ODEs, h, &t,nVar, x, &output, h_min); 
 
+    // calculate
+    EU(&ODEs, h, &t,nVar, x, &output, h_min); 
+
+    // don't forget to close file!
     fclose(output);
 
     return 0;
