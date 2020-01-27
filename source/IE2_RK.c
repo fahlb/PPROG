@@ -4,6 +4,13 @@
 #include <stdio.h>          // IO: fprintf(), etc.
 #include "Runge_Kutta_4.c"  // RK4()
 
+/* TODO:
+    - write in rk functions, pass FILE* if necessary and just 
+      wirte head of file in main()
+      don't forget to close in main()
+
+*/
+
 double ODEs(int i, double t, const double var[]){
     // var[0]: x(t)
     // var[1]: v(t)
@@ -31,52 +38,45 @@ double ODEs(int i, double t, const double var[]){
  
 int main(){
     // set stepsize h, start and finish time
-    const double h = 0.01;         // [s]
+    const double h = 0.5;         // [s]
+    const double h_min = 0.05; // minimum step size to be written
+ 
     const double t_0 = 0.0;       // [s]
     const double t_f = 20.0;      // [s]
     
     // calculate number of steps N
-    const int nSteps = (t_f-t_0)/h;   
     const int nVar   = 2;
 
     // for results
-    double x[nSteps][nVar];
+    double x[nVar];
     double t;
 
     // set initial conditions
-    x[0][0] = 0; // [m]
-    x[0][1] = 1; // [m/s]
-    t = t_0;     // [s]
-
-    // calculate
-    AdaptiveRK4(&ODEs,nSteps, h, &t, nVar, x);
-    printf("i make it this far\n");
-
-    // write results into file
-    double h_min = 0.05; // minimum step size writen
-    //double nSteps_write = nSteps*(h/h_min);
-    int n_skip = h_min/h;    // n skipped to stick to h_min
-
+    x[0] = 0;   // [m]
+    x[1] = 1;   // [m/s]
+    t = t_0;    // [s]
+  
+    // write head and initial conditions
     FILE* output;
-    char path[50];
+    char path[50]; 
     sprintf(path, "../output/IE2_RK_h=%.3f.dat",h);
-    output = fopen(path, "w+");
+//    output = fopen(path, "w+");
+    output = fopen("../output/test.dat", "w+"); 
     fprintf(output, "# t[s]         ");
     fprintf(output, "x[m]         "  );
     fprintf(output, "v[m/s]       "  );
     fprintf(output, "\n");
+    // 
+    fprintf(output, "  %.3e", t); 
+    for(int i=0; i<nVar;i++){
+        fprintf(output, "    %.3e", x[i]);
+    } 
+    fprintf(output, "\n");
 
-    int size = sizeof(x) / sizeof(x[0][0]) / nVar;
-//    printf("size = %d \n",size);
+ 
+    // calculate
+    RK4(&ODEs, h, &t,nVar, x, &output, h_min); 
 
-    for(int n=0;n<size;n++){
-        if(h<h_min && (n%n_skip)){continue;} //skip if not multiple of n_skip
-        fprintf(output, "  %.3e", n*h);
-        for(int i=0; i<nVar;i++){
-            fprintf(output, "    %.3e", x[n][i]);
-        }
-        fprintf(output, "\n");
-    }
     fclose(output);
 
     return 0;
