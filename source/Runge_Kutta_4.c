@@ -56,25 +56,17 @@ void NextRK4(double (*f)(int, double, const double*),  // function pointer
     int i;
 
     //k1:
-    for(i=0;i<nVar;i++){
-        temp_x[i] = x[i];
-        k1[i] = (*f)(i,*t,temp_x);
-    }
+    for(i=0;i<nVar;i++){temp_x[i] = x[i];                   }
+    for(i=0;i<nVar;i++){k1[i]     = (*f)(i,*t,temp_x);      }
     //k2:
-    for(i=0;i<nVar;i++){
-        temp_x[i] = x[i] + h/2*k1[i];
-        k2[i] = (*f)(i,*t+h/2, temp_x);
-    }
+    for(i=0;i<nVar;i++){temp_x[i] = x[i] + h/2*k1[i];       }
+    for(i=0;i<nVar;i++){k2[i]     = (*f)(i,*t+h/2, temp_x); }
     //k3:
-    for(i=0;i<nVar;i++){
-        temp_x[i] = x[i] + h/2*k2[i];
-        k3[i] = (*f)(i,*t+h/2, temp_x);
-    }
+    for(i=0;i<nVar;i++){temp_x[i] = x[i] + h/2*k2[i];       }
+    for(i=0;i<nVar;i++){k3[i]     = (*f)(i,*t+h/2, temp_x); }
     //k4:
-    for(i=0;i<nVar;i++){
-        temp_x[i] = x[i] + h*k3[i];
-        k4[i] = (*f)(i,*t+h, temp_x);
-    }
+    for(i=0;i<nVar;i++){temp_x[i] = x[i] + h*k3[i];         }
+    for(i=0;i<nVar;i++){k4[i]     = (*f)(i,*t+h, temp_x);   }
 
     // make final step
     for(i=0;i<nVar;i++){
