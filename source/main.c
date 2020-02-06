@@ -7,7 +7,7 @@
 
 int main(){
     // set stepsize h, start and finish time
-    const double h = 3600;         // [s]
+    const double h = 60;         // [s]
     const double h_min = 24*3600;      // minimum step size to be written
 
     const double t_0 = 0.0;       // [s]
@@ -15,7 +15,7 @@ int main(){
 
     // calculate number of steps N
 //    const int nVar = 12;
-    const int nVar = 8; // testing with just one moon
+    const int nVar = 12; // testing with just one moon
 
     // for results
     double var[nVar];
@@ -30,12 +30,11 @@ int main(){
     var[5] = 0;         // x_12(t)
     var[6] = 0;         // v_11(t)
     var[7] = 15831.3;   // v_12(t)
-/*
     var[8] = -151422e3; // x_21(t) Epimetheus
     var[9] = 0;         // x_22(t)
     var[10]= 0;         // v_21(t)
     var[11]= -15833.9;  // v_22(t)
-*/
+
 
     t = t_0;    // [s]
   
@@ -45,16 +44,16 @@ int main(){
     sprintf(path, "../output/data.dat",h);
     output = fopen(path, "w+");
     fprintf(output, "# t[s]         ");
-    fprintf(output, "r_00[m]      ");
-    fprintf(output, "r_01[m]      ");
+    fprintf(output, "x_00[m]      ");
+    fprintf(output, "x_01[m]      ");
     fprintf(output, "v_00[m/s]    ");
     fprintf(output, "v_01[m/s]    ");
-    fprintf(output, "r_10[m]      ");
-    fprintf(output, "r_11[m]      ");
+    fprintf(output, "x_10[m]      ");
+    fprintf(output, "x_11[m]      ");
     fprintf(output, "v_10[m/s]    ");
     fprintf(output, "v_11[m/s]    ");
-    fprintf(output, "r_20[m]      ");
-    fprintf(output, "r_21[m]      ");
+    fprintf(output, "x_20[m]      ");
+    fprintf(output, "x_21[m]      ");
     fprintf(output, "v_20[m/s]    ");
     fprintf(output, "v_21[m/s]    ");
     fprintf(output, "\n");

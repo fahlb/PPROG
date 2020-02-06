@@ -7,14 +7,14 @@
 */
 
 double r_ij_d(int i, int j, int d, int D, const double var[]){
-    // returns d komponent of distance vector d=0:x ,d=1:y
-    return var[2*i*D +d] - var[2*j*D +d];
+    // returns d component of of vector from j to i
+    // d=0:x-component, d=1:y-component
+    return var[2*i*D +d] - var[2*j*D +d];   // 
 }
 
 double distance_ij(int i, int j, int D, const double var[]){
     // returns absolute value of distance between objects i and j
     double r_ij[D];
-    printf("distance_ij(): r_ij_d(%d,%d,0,..) = %e \n",i,j,r_ij_d(i,j,0,D,var));
     for(int d=0;d<D;d++){
         r_ij[d] = r_ij_d(i,j,d,D,var);
     }
@@ -27,11 +27,9 @@ double distance_ij(int i, int j, int D, const double var[]){
 }
 
 double F_ij(int i, int j, int D, double m[], const double var[]){
-    // returns absolute value of force between objects 
+    // returns absolute value of force between objects with correct sign!!
     const double G = 6.67384e-11;    // [N m^2 2^-2]
-    printf("F_ij(): distance(%d,%d,..) = %e \n",i,j,distance_ij(i,j,D,var));
-    // ^ why on earth does this return a false value all of the sudden?!
-    return - G*m[i]*m[j]/pow(distance_ij(i,j,D,var),2);
+    return -G*m[i]*m[j]/pow(distance_ij(i,j,D,var),2);
 }
 
 double ODEs(int k, double t, const double var[]){
@@ -63,14 +61,14 @@ double ODEs(int k, double t, const double var[]){
      */
 
 //    const int N = 3; // do in main() ?
-    const int N = 2; // testing with only one moon
+    const int N = 3; // testing with only one moon
     const int D = 2; // ..?
 
     // masses
     double m[N];    // do also in main() ? + read from file?
     m[0] = 5.688e26;    // M_Saturn     [kg]
     m[1] = 1.98e18;     // M_Janus      [kg]
-    //m[2] = 5.5e17;      // M_Epimetheus [kg]
+    m[2] = 5.5e17;      // M_Epimetheus [kg]
 
     // calculate every F_i (dimensions seperately) (basically F_nd !!!)
     double F_i[N][D];  // d komponent of force acting on body i (=n, F_nd)
