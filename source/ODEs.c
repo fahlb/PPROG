@@ -2,19 +2,21 @@
 #include <stdio.h>
 
 /* TODO:
-    - put back into main.c ?
-    - initialization of N and D in main?
+    - fix F_ij()
     - do just Saturn + Janus first? 
 */
 
-double r_ij_d(int i, int j, int N, int d, int D, const double var[]){
-    return var[2*i*D +d] - var[2*j*D +d]; // x coord. of distance (d=0)
+double r_ij_d(int i, int j, int d, int D, const double var[]){
+    // returns d komponent of distance vector d=0:x ,d=1:y
+    return var[2*i*D +d] - var[2*j*D +d];
 }
 
-double distance_ij(int i, int j, int N, int D, const double var[]){
+double distance_ij(int i, int j, int D, const double var[]){
+    // returns absolute value of distance between objects i and j
     double r_ij[D];
+    printf("distance_ij(): r_ij_d(%d,%d,0,..) = %e \n",i,j,r_ij_d(i,j,0,D,var));
     for(int d=0;d<D;d++){
-        r_ij[d] = r_ij_d(i,j,N,d,D,var);
+        r_ij[d] = r_ij_d(i,j,d,D,var);
     }
 
     double result_squared = 0;
@@ -24,12 +26,12 @@ double distance_ij(int i, int j, int N, int D, const double var[]){
     return sqrt(result_squared);
 }
 
-double F_ij(int i, int j, int N, int D, double m[], const double var[]){
-    // returns absolute value
+double F_ij(int i, int j, int D, double m[], const double var[]){
+    // returns absolute value of force between objects 
     const double G = 6.67384e-11;    // [N m^2 2^-2]
-
-    double F_ij = - G*m[i]*m[j]/pow(distance_ij(i,j,N,D,var),2);
-    return F_ij;
+    printf("F_ij(): distance(%d,%d,..) = %e \n",i,j,distance_ij(i,j,D,var));
+    // ^ why on earth does this return a false value all of the sudden?!
+    return - G*m[i]*m[j]/pow(distance_ij(i,j,D,var),2);
 }
 
 double ODEs(int k, double t, const double var[]){
@@ -60,25 +62,26 @@ double ODEs(int k, double t, const double var[]){
      *  var[11]: v_22(t)
      */
 
-    const int N = 3; // do in main() ?
+//    const int N = 3; // do in main() ?
+    const int N = 2; // testing with only one moon
     const int D = 2; // ..?
 
     // masses
     double m[N];    // do also in main() ? + read from file?
     m[0] = 5.688e26;    // M_Saturn     [kg]
     m[1] = 1.98e18;     // M_Janus      [kg]
-    m[2] = 5.5e17;      // M_Epimetheus [kg]
+    //m[2] = 5.5e17;      // M_Epimetheus [kg]
 
     // calculate every F_i (dimensions seperately) (basically F_nd !!!)
-    double F_i[N][D];  // d coordinate of force acting on body i (=n, F_nd)
+    double F_i[N][D];  // d komponent of force acting on body i (=n, F_nd)
     for(int d=0;d<D;d++){
         for(int i=0;i<N;i++){   // n=i
             F_i[i][d] = 0;
             for(int j=0;j<N;j++){   // n=j
                 if(i==j){continue;}
                 // sum up forces
-                F_i[i][d] += F_ij(i,j,N,D,m,var)
-                             *(r_ij_d(i,j,N,d,D,var)/distance_ij(i,j,N,D,var));
+                F_i[i][d] += F_ij(i,j,D,m,var)
+                             *(r_ij_d(i,j,d,D,var)/distance_ij(i,j,D,var));
             }             // ^ multiply with unit vector in dimension d !
         }
     }
@@ -128,8 +131,8 @@ double ODEs(int k, double t, const double var[]){
         case -1:    // return 0, if conditio to stop integration is reached
                     // return 1, otherwise (continue integration)
             {
-            //printf("condition\n");
-            double t_f = 20; // time to stop at [s]
+            // time to stop at [s] <- should not be hardcoded!
+            double t_f = 315360000; // 10yrs
             if(t< t_f){return 1;}
             if(t>=t_f){return 0;}
             }
