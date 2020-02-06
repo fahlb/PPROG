@@ -77,7 +77,7 @@ int main(){
     // calculate
     RK4(&ODEs, h, &t,nVar, x, &output, h_min); 
 
-    // don't forget to close file!
+    // don't forget to close file! - Maybe not necessary; closes automatically
     fclose(output);
 
     return 0;

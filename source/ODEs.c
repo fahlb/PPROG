@@ -7,11 +7,11 @@
     - do just Saturn + Janus first? 
 */
 
-double r_ij_d(int i, int j, int N, int d, int D, double var[]){
+double r_ij_d(int i, int j, int N, int d, int D, const double var[]){
     return var[2*i*D +d] - var[2*j*D +d]; // x coord. of distance (d=0)
 }
 
-double distance_ij(int i, int j, int N, int D, double var[]){
+double distance_ij(int i, int j, int N, int D, const double var[]){
     double r_ij[D];
     for(int d=0;d<D;d++){
         r_ij[d] = r_ij_d(i,j,N,d,D,var);
@@ -24,7 +24,7 @@ double distance_ij(int i, int j, int N, int D, double var[]){
     return sqrt(result_squared);
 }
 
-double F_ij(int i, int j, int N, int D, double m[], double var[]){
+double F_ij(int i, int j, int N, int D, double m[], const double var[]){
     // returns absolute value
     const double G = 6.67384e-11;    // [N m^2 2^-2]
 
@@ -83,6 +83,8 @@ double ODEs(int k, double t, const double var[]){
         }
     }
 
+    //printf("i = %d", k);
+
     // dx_nd/dt = v_nd
     // dv_nd/dt = F_nd/m_n
 
@@ -125,9 +127,12 @@ double ODEs(int k, double t, const double var[]){
 
         case -1:    // return 0, if conditio to stop integration is reached
                     // return 1, otherwise (continue integration)
-            double t_f = 0; // time to stop at [s]
-            if(t<t_f) {return 1;}
+            {
+            //printf("condition\n");
+            double t_f = 20; // time to stop at [s]
+            if(t< t_f){return 1;}
             if(t>=t_f){return 0;}
+            }
     
         default: 
             printf("invalid argument i=%d for ODEs()\n", k);

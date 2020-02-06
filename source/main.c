@@ -17,12 +17,23 @@ int main(){
     const int nVar = 12;
 
     // for results
-    double x[nVar];
+    double var[nVar];
     double t;
 
     // set initial conditions
-    x[0] = 0;   // [m]
-    x[1] = 1;   // [m/s]
+    var[0] = 0;         // x_01(t) Saturn
+    var[1] = 0;         // x_02(t)
+    var[2] = 0;         // v_01(t)
+    var[3] = 0;         // v_02(t)
+    var[4] = 151472e3;  // x_11(t) Janus
+    var[5] = 0;         // x_12(t)
+    var[6] = 0;         // v_11(t)
+    var[7] = 15831.3;   // v_12(t)
+    var[8] = 0;         // x_21(t) Epimetheus
+    var[9] = -151422e3; // x_22(t)
+    var[10]= 0;         // v_21(t)
+    var[11]= -15833.9;  // v_22(t)
+
     t = t_0;    // [s]
   
     // write head and initial conditions
@@ -47,13 +58,12 @@ int main(){
     // 
     fprintf(output, "  %.3e", t); 
     for(int i=0; i<nVar;i++){
-        fprintf(output, "    %.3e", x[i]);
+        fprintf(output, "    %.3e", var[i]);
     } 
     fprintf(output, "\n");
 
-
     // calculate
-    RK4(&ODEs, h, &t,nVar, x, &output, h_min); 
+    RK4(&ODEs, h, &t,nVar, var, &output, h_min); 
 
     // don't forget to close file!
     fclose(output);
