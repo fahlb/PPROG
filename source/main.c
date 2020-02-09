@@ -7,11 +7,12 @@
 
 int main(){
     // set stepsize h, start and finish time
-    const double h = 60;         // [s]
-    const double h_min = 24*3600;      // minimum step size to be written
-
+    const double h = 1e2;         // [s]
+    const double h_min = 1*(24*60*60); // minimum step size to be written
+    const double precission = 1e-5;  // precission when using adaptive step size
+    // ^ needs to be sufficiently small; wont work otherwise (no idea why..)
     const double t_0 = 0.0;       // [s]
-    const double t_f = 31536000;      // [s]
+    const double t_f = 10*365.25*60*60;      // [s]
 
     // calculate number of steps N
 //    const int nVar = 12;
@@ -65,7 +66,7 @@ int main(){
     fprintf(output, "\n");
 
     // calculate
-    RK4(&ODEs, h, &t,nVar, var, &output, h_min); 
+    energyAdaptiveRK4(&ODEs, h, &t,nVar, var, &output, h_min,precission); 
 
     // don't forget to close file!
     fclose(output);

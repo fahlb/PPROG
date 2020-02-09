@@ -67,8 +67,8 @@ double E_tot(int N, int D, double m[], const double var[]){
             V += V_ij(i,j,D,m,var);
         }
     }
-    printf("E_tot: V = %e \n",V);
-    printf("E_tot: T = %e \n",T);
+    //printf("E_tot: V = %e \n",V);
+    //printf("E_tot: T = %e \n",T);
     return (V + T);
 }
 
@@ -171,7 +171,7 @@ double ODEs(int k, double t, const double var[]){
                     // return 1, otherwise (continue integration)
             {
             // time to stop at [s] <- should not be hardcoded!
-            double t_f = 365.25*24*60*60; //
+            double t_f = 10*365.25*24*60*60; //
             if(t< t_f){return 1;}
             if(t>=t_f){return 0;}
             }
