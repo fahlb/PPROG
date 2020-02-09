@@ -6,6 +6,8 @@
     - do just Saturn + Janus first? 
 */
 
+const double G = 6.67384e-11;   // [N m^2 2^-2]
+
 double r_ij_d(int i, int j, int d, int D, const double var[]){
     // returns d component of of vector from j to i
     // d=0:x-component, d=1:y-component
@@ -14,23 +16,62 @@ double r_ij_d(int i, int j, int d, int D, const double var[]){
 
 double distance_ij(int i, int j, int D, const double var[]){
     // returns absolute value of distance between objects i and j
+
+    // get vector components of r_ij:
     double r_ij[D];
     for(int d=0;d<D;d++){
         r_ij[d] = r_ij_d(i,j,d,D,var);
     }
-
-    double result_squared = 0;
+    // calculate square of distance vector r_ij:
+    double r_squared = 0;
     for(int d=0;d<D;d++){
-        result_squared += r_ij[d]*r_ij[d];
+        r_squared += r_ij[d]*r_ij[d];
     }
-    return sqrt(result_squared);
+    return sqrt(r_squared);
 }
 
 double F_ij(int i, int j, int D, double m[], const double var[]){
-    // returns absolute value of force between objects with correct sign!!
-    const double G = 6.67384e-11;    // [N m^2 2^-2]
+    // returns directionsless value of force between bodies
+    //const double G = 6.67384e-11;    // [N m^2 2^-2]
     return -G*m[i]*m[j]/pow(distance_ij(i,j,D,var),2);
 }
+
+double T_i(int i, int D, double m[], const double var[]){
+    // returns kinetic energy of body i
+
+    // calculate square of abolute value of velocity:
+    double v_squared = 0;
+    for(int d=0;d<D;d++){
+        v_squared += pow(var[(2*i+1)*D + d],2);
+    }
+    return 0.5 * m[i] * v_squared;
+}
+
+double V_ij(int i, int j, int D, double m[], const double var[]){
+    // return potential between bodies i and j
+    //const double G = 6.67384e-11;    // [N m^2 2^-2]
+    return -G*m[i]*m[j]/distance_ij(i,j,D,var);
+}
+
+double E_tot(int N, int D, double m[], const double var[]){
+    // returns total energy; could be put in ODEs() for k=-2 !
+    double V = 0;
+    double T = 0;
+
+    for(int i=0;i<N;i++){
+        T += T_i(i,D,m,var);
+
+        // calculate V_i:
+        for(int j=0;j<N;j++){
+            if(i==j || i<j){continue;}  // skip i=j and duplicates
+            V += V_ij(i,j,D,m,var);
+        }
+    }
+    printf("E_tot: V = %e \n",V);
+    printf("E_tot: T = %e \n",T);
+    return (V + T);
+}
+
 
 double ODEs(int k, double t, const double var[]){
     /* x_nd, v_nd
@@ -130,11 +171,14 @@ double ODEs(int k, double t, const double var[]){
                     // return 1, otherwise (continue integration)
             {
             // time to stop at [s] <- should not be hardcoded!
-            double t_f = 315360000; // 10yrs
+            double t_f = 365.25*24*60*60; //
             if(t< t_f){return 1;}
             if(t>=t_f){return 0;}
             }
-    
+
+        case -2:    // returns total energy of system
+            return E_tot(N,D,m,var);
+
         default: 
             printf("invalid argument i=%d for ODEs()\n", k);
             return 0;

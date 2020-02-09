@@ -6,8 +6,7 @@
 //double ODEs(int i, double t, const double var[]);
 
 /* TODO:
-    - EU is broken; why the fuck is it more precise than RK?!
-    - ???
+    - test energyAdaptiveRK4 with harmonic oscillator!
 */
 
 void NextEU(double (*f)(int, double, const double*),  // function pointer
@@ -73,8 +72,6 @@ void NextRK4(double (*f)(int, double, const double*),  // function pointer
         x[i] += h/6*( k1[i] + 2*k2[i] + 2*k3[i] + k4[i] );
     }
 //    *t += h;
-
-
 }
 
 void RK4(double (*f)(int, double, const double[]),  // function pointer
@@ -154,6 +151,62 @@ void AdaptiveRK4(double (*f)(int, double, const double[]),  // function pointer
 
         // increase step counter
 //        printf("last n: %d \n", n);
+        n += 1;   
+
+        // write step
+        if(h<h_min && (n%(int)(h_min/h))){continue;} //skip small step
+        fprintf(*output, "  %.3e", *t);
+        for(int i=0; i<nVar;i++){
+            fprintf(*output, "    %.3e", x[i]);
+        }
+        fprintf(*output, "\n");
+    }
+}
+
+// 4-th order RK with adaptive step size based on conservatino of total energy:
+void energyAdaptiveRK4(double (*f)(int, double, const double[]),
+                double h, double *t, int nVar, double x[nVar], 
+                FILE** output, double h_min, double precision){
+
+    int n = 0;  // start with first step (n=0 : initial conditions)
+    double x_1full[nVar];   // temporary x[i] for 1 full step
+    double x_2half[nVar];   // temporary x[i] for 2 half steps
+    
+//    while(n<nSteps-1){
+    while((*f)(-1,*t,x)){    // breaks code?! :(   
+        // save copy of x[i] for both advances
+        for(int i=0;i<nVar;i++){
+            x_1full[i] = x[i];
+            x_2half[i] = x[i];
+        }
+        // make one full step:
+        NextRK4(f,h,t,nVar,x_1full);
+        // make two half steps:
+        NextRK4(f,h/2,t,nVar,x_2half);
+        double newt = *t+h/2;
+        NextRK4(f,h/2,&(newt),nVar,x_2half);
+        
+        // check if stepsize sufficient:
+
+        // difference of 1 full and 2 half steps:
+        double deltaE_tot = fabs( (*f)(-2,*t+h,x_2half) - (*f)(-2,*t+h,x_1full) );
+        // calculate relative error:
+        double relError = deltaE_tot/fabs((*f)(-2,*t+h,x_2half));
+
+        bool take_step = true;
+        if(relError > precision){take_step = false;}
+        if(take_step){
+            for(int i=0;i<nVar;i++){
+                x[i] = x_1full[i];
+            }
+            *t+=h;
+            h=h*2;  // double step size
+        }
+        else{
+            h=h/2;  // halve step size
+            continue;   // skip n++ -> redo with new h
+        }
+        // increase step counter
         n += 1;   
 
         // write step
