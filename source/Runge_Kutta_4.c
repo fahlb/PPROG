@@ -102,7 +102,7 @@ void RK4(double (*f)(int, double, const double[]),  // function pointer
 
 void AdaptiveRK4(double (*f)(int, double, const double[]),  // function pointer
                 double h, double *t, int nVar, double x[nVar], 
-                FILE** output, double h_min){
+                FILE** output, double h_min, double precission){
 
     double max_error[nVar]; // make argument; maximum error for each variable
     for(int i=0;i<nVar;i++){
@@ -127,11 +127,11 @@ void AdaptiveRK4(double (*f)(int, double, const double[]),  // function pointer
         double newt = *t+h/2;
         NextRK4(f,h/2,&(newt),nVar,x_2half);
         
-        double difference[nVar];    // difference of 1 full and 2 half steps
+        double relError[nVar];    // relative error for 1 full and 2 half steps
         bool take_step = true;
         for(int i=0;i<nVar;i++){
-            difference[i] = fabs(x_1full[i]-x_2half[i]);
-            if(difference[i] > max_error[i]){
+            relError[i] = fabs(x_2half[i] - x_1full[i])/fabs(x_2half[i]);
+            if(relError[i] > precission){
                 take_step = false;
             //  printf("max_error exceeded! difference[%d] = %f\n",i,difference[i]);
                 break;
@@ -146,7 +146,7 @@ void AdaptiveRK4(double (*f)(int, double, const double[]),  // function pointer
         }
         else{
             h=h/2;  // halve step size
-            continue;   // skip n++ -> redo with new h
+            continue;   // skip n++ -> redo with new halved h
         }
 
         // increase step counter
