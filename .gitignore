@@ -2,3 +2,10 @@ test/
 output/*.dat
 introductory-exercises/output/*.dat
 .vscode/
+*/a.out
+
+# exclude executables
+introductory-exercises/IE1
+introductory-exercises/IE2
+introductory-exercises/IE2_RK
+source/IE2_RK
