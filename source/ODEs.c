@@ -72,6 +72,48 @@ double E_tot(int N, int D, double m[], const double var[]){
     return (V + T);
 }
 
+double distance2cm(int i, int N, int D, double m[], const double var[]){
+    double distance2cm_i;
+
+    // find coordinatess of center of mass (cm):
+    double cm_coord[D];
+
+    // get total mass of system
+    double m_tot = 0;   // total mass of system
+    for(int k=0;k<N;k++){
+        m_tot += m[k];
+    }
+    for(int d=0;d<D;d++){
+        cm_coord[d] = 0;
+        for(int k=N;k<N;k++){
+            cm_coord[d] += m[k] / m_tot * var[2*k*D +d];
+        }
+    }
+    //printf("distance2cm: i=%d\n", i);
+    //printf("distance2cm: x_cm = %+.3e \n", cm_coord[0]);
+    //printf("distance2cm: y_cm = %+.3e \n", cm_coord[1]);
+    //printf("\n");
+
+
+    // find distances of objects to cm:
+    double dist_square;  // temp square of distance to cm
+    // get components of distance:
+    for(int d=0;d<D;d++){
+        dist_square += pow(var[2*i*D +d] - cm_coord[d], 2);
+    }
+    distance2cm_i = sqrt(dist_square);
+
+    return distance2cm_i;
+}
+
+double r_polar_i(int i, int N, int D, const double var[]){
+    double temp = 0;
+    for(int d=0;d<D;d++){
+        temp += pow(var[2*i*D +d],2);
+    }
+    return sqrt(temp);
+}
+
 
 double ODEs(int k, double t, const double var[]){
     /* x_nd, v_nd
