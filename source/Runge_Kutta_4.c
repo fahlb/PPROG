@@ -39,9 +39,9 @@ void EU(double (*f)(int, double, const double[]),  // function pointer
 
         // write step
         if(h<h_min && (n%(int)(h_min/h))){continue;} //skip small step
-        fprintf(*output, "  %.3e", *t);
+        fprintf(*output, " %+.6e", *t);
         for(int i=0; i<nVar;i++){
-            fprintf(*output, "    %.3e", x[i]);
+            fprintf(*output, "   %+.6e", x[i]);
         }
         fprintf(*output, "\n");
     }
@@ -91,9 +91,9 @@ void RK4(double (*f)(int, double, const double[]),  // function pointer
 
         // write step
         if(h<h_min && (n%(int)(h_min/h))){continue;} //skip small step
-        fprintf(*output, "  %.3e", *t);
+        fprintf(*output, " %+.6e", *t);
         for(int i=0; i<nVar;i++){
-            fprintf(*output, "    %.3e", x[i]);
+            fprintf(*output, "   %+.6e", x[i]);
         }
         fprintf(*output, "\n");
     }
@@ -155,9 +155,9 @@ void AdaptiveRK4(double (*f)(int, double, const double[]),  // function pointer
 
         // write step
         if(h<h_min && (n%(int)(h_min/h))){continue;} //skip small step
-        fprintf(*output, "  %.3e", *t);
+        fprintf(*output, " %+.6e", *t);
         for(int i=0; i<nVar;i++){
-            fprintf(*output, "    %.3e", x[i]);
+            fprintf(*output, "   %+.6e", x[i]);
         }
         fprintf(*output, "\n");
     }
@@ -211,9 +211,9 @@ void energyAdaptiveRK4(double (*f)(int, double, const double[]),
 
         // write step
         if(h<h_min && (n%(int)(h_min/h))){continue;} //skip small step
-        fprintf(*output, "  %.3e", *t);
+        fprintf(*output, " %+.6e", *t);
         for(int i=0; i<nVar;i++){
-            fprintf(*output, "    %.3e", x[i]);
+            fprintf(*output, "   %+.6e", x[i]);
         }
         fprintf(*output, "\n");
     }
