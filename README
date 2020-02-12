@@ -1,3 +1,5 @@
+Project for programming class (PPROG) at Goethe University Frankfurt. Information can be found in the provided PDF.
+
 compile with "gcc main.c -0 main -lm"
 main will create a data file with position and velocity of the bodeis Saturn (0), Janus (1) and Epimetheus (2) over a time span of 10 years.
 
