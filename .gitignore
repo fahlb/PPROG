@@ -8,4 +8,5 @@ introductory-exercises/output/*.dat
 introductory-exercises/IE1
 introductory-exercises/IE2
 introductory-exercises/IE2_RK
-source/IE2_RK
+source/main
+source/results

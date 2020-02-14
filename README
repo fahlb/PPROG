@@ -3,7 +3,7 @@ Project for programming class (PPROG) at Goethe University Frankfurt. Informatio
 compile with "gcc -lm -o main main.c Runge_Kutta_4.c read_parameters.c ODEs.c"
 main will create a data file with position and velocity of the bodies Saturn (0), Janus (1) and Epimetheus (2) over a time span of 10 years.
 
-for resutls in terms of distance to center of mass as function of time compile results.c with "gcc -lm -o main main.c ODEs.c"
+for resutls in terms of distance to center of mass as function of time compile results.c with "gcc -lm -o results results.c ODEs.c read_parameters.c"
 results will read the data file created by main and calculate the distance to the center of mass (cm) for each entrie. It then will write these results into a separate file.
 
 soure/input.dat contains the initial conditions for the system and parameters for the integration.
