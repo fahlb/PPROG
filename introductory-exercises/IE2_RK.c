@@ -2,7 +2,7 @@
 
 #include <math.h>           // ??
 #include <stdio.h>          // IO: fprintf(), etc.
-#include "Runge_Kutta_4.c"  // RK4()
+#include "../source/Runge_Kutta_4.h"  // RK4()
 
 /* TODO:
     - write in rk functions, pass FILE* if necessary and just 
@@ -59,7 +59,9 @@ int main(){
     // write head and initial conditions
     FILE* output;
     char path[50]; 
-    sprintf(path, "output/IE2_RK_h=%.3f.dat",h);
+//    sprintf(path, "output/IE2_RK_h=%.3f.dat",h);
+    sprintf(path, "output/IE2_RK_adaptive.dat",h);
+  
     output = fopen(path, "w+");
 //    output = fopen("../output/test.dat", "w+"); 
     fprintf(output, "# t[s]         ");
@@ -75,7 +77,7 @@ int main(){
 
 
     // calculate
-    RK4(&ODEs, h, &t,nVar, x, &output, h_min); 
+    AdaptiveRK4(&ODEs, h, &t,nVar, x, &output, h_min,0.001); 
 
     // don't forget to close file! - Maybe not necessary; closes automatically
     fclose(output);
