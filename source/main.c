@@ -39,10 +39,20 @@ int main(){
     t = t_0;    // [s]
 
     // check input
-    for(int i=0;i<2*N*D+N+5;i++){
-        printf("%f \n", parameters[i]);
+    printf("input read from input.dat \n");
+    for(int i=0;i<2*N*D;i++){
+        printf("var[%d] = %f \n", i, var[i]);
     }
-  
+    for(int i=0;i<N;i++){
+        printf("m[%d] = %f \n", i, m[i]);
+    }
+    printf("h = %f \n", h);
+    printf("h_min = %f \n", h_min);
+    printf("precission = %f \n", precission);
+    printf("t_0 = %f \n", t_0);
+    printf("t_f = %f \n", t_f);
+
+
     // write head and initial conditions
     FILE* output;
     char path[50]; 
