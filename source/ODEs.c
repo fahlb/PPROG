@@ -1,4 +1,5 @@
 #include "ODEs.h"
+#include "read_parameters.h"
 
 const double G = 6.67384e-11;   // [N m^2 2^-2]
 
@@ -141,11 +142,15 @@ double ODEs(int k, double t, const double var[]){
     const int N = 3; // testing with only one moon
     const int D = 2; // ..?
 
+    // read from input file:
+    double parameters[2*N*D+N+5];
+    read_parameters("input.dat", N, D, parameters);
     // masses
     double m[N];    // do also in main() ? + read from file?
-    m[0] = 5.688e26;    // M_Saturn     [kg]
-    m[1] = 1.98e18;     // M_Janus      [kg]
-    m[2] = 5.5e17;      // M_Epimetheus [kg]
+    m[0] = parameters[2*N*D +0];    // M_Saturn     [kg]
+    m[1] = parameters[2*N*D +1];    // M_Janus      [kg]
+    m[2] = parameters[2*N*D +2];    // M_Epimetheus [kg]
+    double t_f = parameters[2*N*D +N+4];
 
     // calculate every F_i (dimensions seperately) (basically F_nd !!!)
     double F_i[N][D];  // d komponent of force acting on body i (=n, F_nd)
@@ -207,7 +212,6 @@ double ODEs(int k, double t, const double var[]){
                     // return 1, otherwise (continue integration)
             {
             // time to stop at [s] <- should not be hardcoded!
-            double t_f = 10*365.25*24*60*60; //
             if(t< t_f){return 1;}
             if(t>=t_f){return 0;}
             }

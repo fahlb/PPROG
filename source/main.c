@@ -4,45 +4,44 @@
 #include <stdio.h>          // IO: fprintf(), etc.
 #include "Runge_Kutta_4.h"  // RK4()
 #include "ODEs.h"
+#include "read_parameters.h"
 
 int main(){
-    int N = 3;  // number of objects
-    int D = 2;  // number of dimensions
+    const int N = 3;  // number of objects
+    const int D = 2;  // number of dimensions
+
+    double parameters[2*N*D+N+5];
+    read_parameters("input.dat", N, D, parameters);
     
     double m[N];// masses of objects
-    m[0] = 5.688e26;    // M_Saturn     [kg]
-    m[1] = 1.98e18;     // M_Janus      [kg]
-    m[2] = 5.5e17;      // M_Epimetheus [kg]
+    for(int i=0;i<N;i++){
+        m[i] = parameters[2*N*D +i];
+    }
 
     // set stepsize h, start and finish time
-    const double h = 60;         // [s]
-    const double h_min = 1*(24*60*60); // minimum step size to be written
-    const double precission = 1e-6;  // precission when using adaptive step size
+    const double h = parameters[2*N*D+N +0];         // [s]
+    const double h_min = parameters[2*N*D+N +1]; // minimum step size written
+    const double precission = parameters[2*N*D+N +2];  
     // ^ needs to be sufficiently small; wont work otherwise (no idea why..)
-    const double t_0 = 0.0;       // [s]
-    const double t_f = 10*365.25*60*60;      // [s]
+    const double t_0 = parameters[2*N*D+N +3];      // [s]
+    const double t_f = parameters[2*N*D+N +4];      // [s]
 
-    const int nVar = 12; 
+    int nVar = 2*N*D; 
     // for results
     double var[nVar];
     double t;
 
     // set initial conditions
-    var[0] = 0;         // x_01(t) Saturn
-    var[1] = 0;         // x_02(t)
-    var[2] = 0;         // v_01(t)
-    var[3] = 0;         // v_02(t)
-    var[4] = 151472e3;  // x_11(t) Janus
-    var[5] = 0;         // x_12(t)
-    var[6] = 0;         // v_11(t)
-    var[7] = 15830.8;   // v_12(t)
-    var[8] = -151422e3; // x_21(t) Epimetheus
-    var[9] = 0;         // x_22(t)
-    var[10]= 0;         // v_21(t)
-    var[11]= -15833.4;  // v_22(t)
-
+    for(int i=0;i<2*N*D;i++){
+        var[i] = parameters[i];
+    }
 
     t = t_0;    // [s]
+
+    // check input
+    for(int i=0;i<2*N*D+N+5;i++){
+        printf("%f \n", parameters[i]);
+    }
   
     // write head and initial conditions
     FILE* output;

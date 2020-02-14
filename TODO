@@ -1,2 +1,1 @@
-* define m[], t_0, t_f in main()
-* load m[i], t_0, t_f from file
+fix distance2cm() ? Is it broken?
