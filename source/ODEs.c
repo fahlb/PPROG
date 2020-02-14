@@ -1,10 +1,4 @@
-#include <math.h>
-#include <stdio.h>
-
-/* TODO:
-    - fix F_ij()
-    - do just Saturn + Janus first? 
-*/
+#include "ODEs.h"
 
 const double G = 6.67384e-11;   // [N m^2 2^-2]
 

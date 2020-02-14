@@ -1,7 +1,6 @@
 #include <math.h>           // compile with -lm
 #include <stdio.h>          // IO: fprintf(), etc.
-#include "ODEs.c"
-
+#include "ODEs.h"
 
 
 int line2array(FILE* myFile,int N, double myArr[]){
@@ -68,25 +67,16 @@ void write_dist2cm(char* inPath, char* outPath, int N, int D, double m[]){
         }
         // do some stupid workaround because shit is fucked somehow..
         // for some odd reason distance2cm(i,..)-distance2cm(j,..) returns nonsense
-        double d_cm_1 = distance2cm(1,N,D,m,var);
-        double d_cm_2 = distance2cm(2,N,D,m,var);
-//        double d_cm_1 = r_polar_i(1,N,D,var);
-//        double d_cm_2 = r_polar_i(2,N,D,var);
+//        double d_cm_1 = distance2cm(1,N,D,m,var);
+//        double d_cm_2 = distance2cm(2,N,D,m,var);
+        double d_cm_1 = r_polar_i(1,N,D,var);
+        double d_cm_2 = r_polar_i(2,N,D,var);
         
         double difference = d_cm_1 - d_cm_2;
         fprintf(output, "   %+.6e", difference);
     
         fprintf(output,"\n");
 
-        // set initial order of orbits
-        if(first_loop){
-            first_loop = 0;
-            initial_order = d_cm_1<d_cm_2;
-        }
-        // attempt to find time at which the moons change orbits
-        if(initial_order != d_cm_1<d_cm_2){
-            printf("Orbits changed position at t = %.2f \n", t/(60*60*24*365.25));
-        }
     }
     fclose(input);
     fclose(output);

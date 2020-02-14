@@ -1,7 +1,4 @@
-#include <math.h>
-#include <stdio.h>
-#include <stdbool.h>
-//#include "Runge_Kutta_4.h"
+#include "Runge_Kutta_4.h"
 
 //double ODEs(int i, double t, const double var[]);
 
@@ -78,24 +75,22 @@ void RK4(double (*f)(int, double, const double[]),  // function pointer
         double h, double *t, int nVar, double x[nVar], 
         FILE** output, double h_min){
 
-    int n = 0;  // start with first step (n=0 : initial conditions)
-//    while(n<nSteps-1){
-    while((*f)(-1,*t,x)){    // breaks code :(   
+    double t_last_saved = *t;
+
+    while((*f)(-1,*t,x)){
         
         NextRK4(f,h,t,nVar,x);
         *t += h;
 
-        // increase step counter
-//        printf("last n: %d \n", n);
-        n += 1;   
-
         // write step
-        if(h<h_min && (n%(int)(h_min/h))){continue;} //skip small step
-        fprintf(*output, " %+.6e", *t);
-        for(int i=0; i<nVar;i++){
-            fprintf(*output, "   %+.6e", x[i]);
+        if(*t-t_last_saved>h_min){ //write only if h_min since last write
+            fprintf(*output, " %+.6e", *t);
+            for(int i=0; i<nVar;i++){
+                fprintf(*output, "   %+.6e", x[i]);
+            }
+            fprintf(*output, "\n");
+            t_last_saved = *t;
         }
-        fprintf(*output, "\n");
     }
 }
 
@@ -104,12 +99,7 @@ void AdaptiveRK4(double (*f)(int, double, const double[]),  // function pointer
                 double h, double *t, int nVar, double x[nVar], 
                 FILE** output, double h_min, double precission){
 
-    double max_error[nVar]; // make argument; maximum error for each variable
-    for(int i=0;i<nVar;i++){
-        max_error[i] = 1e-7;
-    }   // temporary!!!
-
-    int n = 0;  // start with first step (n=0 : initial conditions)
+    double t_last_saved = *t;
     double x_1full[nVar];   // temporary x[i] for 1 full step
     double x_2half[nVar];   // temporary x[i] for 2 half steps
     
@@ -133,7 +123,6 @@ void AdaptiveRK4(double (*f)(int, double, const double[]),  // function pointer
             relError[i] = fabs(x_2half[i] - x_1full[i])/fabs(x_2half[i]);
             if(relError[i] > precission){
                 take_step = false;
-            //  printf("max_error exceeded! difference[%d] = %f\n",i,difference[i]);
                 break;
             }
         }
@@ -146,20 +135,18 @@ void AdaptiveRK4(double (*f)(int, double, const double[]),  // function pointer
         }
         else{
             h=h/2;  // halve step size
-            continue;   // skip n++ -> redo with new halved h
+            continue;   // skip writing, redo with new halved h
         }
-
-        // increase step counter
-//        printf("last n: %d \n", n);
-        n += 1;   
 
         // write step
-        if(h<h_min && (n%(int)(h_min/h))){continue;} //skip small step
-        fprintf(*output, " %+.6e", *t);
-        for(int i=0; i<nVar;i++){
-            fprintf(*output, "   %+.6e", x[i]);
+        if(*t-t_last_saved>h_min){ //write only if h_min since last write
+            fprintf(*output, " %+.6e", *t);
+            for(int i=0; i<nVar;i++){
+                fprintf(*output, "   %+.6e", x[i]);
+            }
+            fprintf(*output, "\n");
+            t_last_saved = *t;
         }
-        fprintf(*output, "\n");
     }
 }
 
@@ -168,7 +155,7 @@ void energyAdaptiveRK4(double (*f)(int, double, const double[]),
                 double h, double *t, int nVar, double x[nVar], 
                 FILE** output, double h_min, double precision){
 
-    int n = 0;  // start with first step (n=0 : initial conditions)
+    double t_last_saved = *t;
     double x_1full[nVar];   // temporary x[i] for 1 full step
     double x_2half[nVar];   // temporary x[i] for 2 half steps
     
@@ -206,15 +193,14 @@ void energyAdaptiveRK4(double (*f)(int, double, const double[]),
             h=h/2;  // halve step size
             continue;   // skip n++ -> redo with new h
         }
-        // increase step counter
-        n += 1;   
-
         // write step
-        if(h<h_min && (n%(int)(h_min/h))){continue;} //skip small step
-        fprintf(*output, " %+.6e", *t);
-        for(int i=0; i<nVar;i++){
-            fprintf(*output, "   %+.6e", x[i]);
+        if(*t-t_last_saved>h_min){ //write only if h_min since last write
+            fprintf(*output, " %+.6e", *t);
+            for(int i=0; i<nVar;i++){
+                fprintf(*output, "   %+.6e", x[i]);
+            }
+            fprintf(*output, "\n");
+            t_last_saved = *t;
         }
-        fprintf(*output, "\n");
     }
 }
