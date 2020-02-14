@@ -80,7 +80,7 @@ double distance2cm(int i, int N, int D, double m[], const double var[]){
     }
     for(int d=0;d<D;d++){
         cm_coord[d] = 0;
-        for(int k=N;k<N;k++){
+        for(int k=0;k<N;k++){
             cm_coord[d] += m[k] / m_tot * var[2*k*D +d];
         }
     }
