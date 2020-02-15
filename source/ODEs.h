@@ -2,7 +2,7 @@
 #include <stdio.h>
 
 // global so it only needs to be read once in main.c and can be used in ODEs()
-extern double m_input[];
+extern double m_input[3];
 extern double t_f_input;
 
 double r_ij_d(int i, int j, int d, int D, const double var[]);

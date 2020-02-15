@@ -24,7 +24,7 @@ int main(){
     const double precission = parameters[2*N*D+N +2];  
     // ^ needs to be sufficiently small; wont work otherwise (no idea why..)
     const double t_0 = parameters[2*N*D+N +3];      // [s]
-    const double t_f_input = parameters[2*N*D+N +4];      // [s]
+    t_f_input = parameters[2*N*D+N +4];      // [s]
 
     int nVar = 2*N*D; 
     // for results
