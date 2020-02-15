@@ -67,10 +67,10 @@ void write_dist2cm(char* inPath, char* outPath, int N, int D, double m[]){
         }
         // do some stupid workaround because shit is fucked somehow..
         // for some odd reason distance2cm(i,..)-distance2cm(j,..) returns nonsense
-//        double d_cm_1 = distance2cm(1,N,D,m,var);
-//        double d_cm_2 = distance2cm(2,N,D,m,var);
-        double d_cm_1 = r_polar_i(1,N,D,var);
-        double d_cm_2 = r_polar_i(2,N,D,var);
+        double d_cm_1 = distance2cm(1,N,D,m,var);
+        double d_cm_2 = distance2cm(2,N,D,m,var);
+//        double d_cm_1 = r_polar_i(1,N,D,var);
+//        double d_cm_2 = r_polar_i(2,N,D,var);
         
         double difference = d_cm_1 - d_cm_2;
         fprintf(output, "   %+.6e", difference);
