@@ -1,7 +1,11 @@
 #include "ODEs.h"
-#include "read_parameters.h"
+//#include "read_parameters.h"
 
 const double G = 6.67384e-11;   // [N m^2 2^-2]
+
+double m_input[];
+double t_f_input;
+
 
 double r_ij_d(int i, int j, int d, int D, const double var[]){
     // returns d component of of vector from j to i
@@ -143,14 +147,14 @@ double ODEs(int k, double t, const double var[]){
     const int D = 2; // ..?
 
     // read from input file:
-    double parameters[2*N*D+N+5];
-    read_parameters("input.dat", N, D, parameters);
+//    double parameters[2*N*D+N+5];
+//    read_parameters("input.dat", N, D, parameters);
     // masses
     double m[N];    // do also in main() ? + read from file?
-    m[0] = parameters[2*N*D +0];    // M_Saturn     [kg]
-    m[1] = parameters[2*N*D +1];    // M_Janus      [kg]
-    m[2] = parameters[2*N*D +2];    // M_Epimetheus [kg]
-    double t_f = parameters[2*N*D +N+4];
+    m[0] = m_input[0];    // M_Saturn     [kg]
+    m[1] = m_input[1];    // M_Janus      [kg]
+    m[2] = m_input[2];    // M_Epimetheus [kg]
+    double t_f = t_f_input;
 
     // calculate every F_i (dimensions seperately) (basically F_nd !!!)
     double F_i[N][D];  // d komponent of force acting on body i (=n, F_nd)

@@ -13,9 +13,9 @@ int main(){
     double parameters[2*N*D+N+5];
     read_parameters("input.dat", N, D, parameters);
     
-    double m[N];// masses of objects
+    //double m[N];// masses of objects
     for(int i=0;i<N;i++){
-        m[i] = parameters[2*N*D +i];
+        m_input[i] = parameters[2*N*D +i];
     }
 
     // set stepsize h, start and finish time
@@ -24,7 +24,7 @@ int main(){
     const double precission = parameters[2*N*D+N +2];  
     // ^ needs to be sufficiently small; wont work otherwise (no idea why..)
     const double t_0 = parameters[2*N*D+N +3];      // [s]
-    const double t_f = parameters[2*N*D+N +4];      // [s]
+    const double t_f_input = parameters[2*N*D+N +4];      // [s]
 
     int nVar = 2*N*D; 
     // for results
@@ -44,13 +44,13 @@ int main(){
         printf("var[%d] = %f \n", i, var[i]);
     }
     for(int i=0;i<N;i++){
-        printf("m[%d] = %f \n", i, m[i]);
+        printf("m[%d] = %f \n", i, m_input[i]);
     }
     printf("h = %f \n", h);
     printf("h_min = %f \n", h_min);
     printf("precission = %f \n", precission);
     printf("t_0 = %f \n", t_0);
-    printf("t_f = %f \n", t_f);
+    printf("t_f = %f \n", t_f_input);
 
 
     // write head and initial conditions
